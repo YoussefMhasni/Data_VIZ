@@ -211,15 +211,30 @@ excel_file.addEventListener('change', (event) => {
 
     data=get_all_team_matchs_data(goals,players,matchs,team,season)
 
-   draw_pitch(data,".chart1") 
+    if(data!='False'){
+    draw_pitch(data,".chart1") 
     console.log(data)
-    const myDiv = document.getElementsByClassName("chart2");
-
 
     piechart(matchs, season, team,".chart2")
     Plot_barchart(data,".chart3")
 
+    }else{
 
+        var chart1 = d3.select(".chart1")
+        var chart2 = d3.select(".chart2")
+        var chart3 = d3.select(".chart3")
+
+        var svg1 = chart1.select("svg");
+        svg1.selectAll("*").remove();
+
+        var svg2 = chart2.select("svg");
+        svg2.selectAll("*").remove();
+
+        var svg3 = chart3.select("svg");
+        svg3.selectAll("*").remove();
+
+
+    }
 }    </script>
 
 </body>
