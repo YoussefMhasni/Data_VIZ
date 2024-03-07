@@ -1,76 +1,59 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liste d'années</title>
-<link rel="stylesheet" type="text/css" href="css/index.css">
-
-<meta charset="utf-8" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
-<script src="d3charts.js"></script>
-<script src="https://d3js.org/d3.v7.js"></script>
-<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-<link rel="stylesheet" type="text/css" href="css/index.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste d'années</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <script src="d3charts.js"></script>
+    <script src="https://d3js.org/d3.v7.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
 <body>
 
-  <div id="file-container" class="file-container">
-    <h2 class="text-center mt-4 mb-4">Import the file</h2>
-    <input type="file" id="excel_file" />
-</div>
 <div id="top_bar">
-	<div id="container2">  
-		<label for="uefacom"></label>
-	</div>
+    <div id="container2">  
+        <label for="uefacom"></label>
+    </div>
 </div>
 <div id="team">  </div>
 
 <div id="teamSelect">
-  <div>
-      <label for="teamDropdown"></label>
-      <select id="teamDropdown"></select>
-
+    <div>
+        <label for="teamDropdown"></label>
+        <select id="teamDropdown"></select>
     </div>
-
 </div>
 <div id="conteneurListe">
-  <div id="anneeListe" style="text-align: center; color: black; font-size: 18px;"></div>
-  <div id="no-seasons-message" style="text-align: center; color: #fff; font-size: 9px; display: none;">No seasons found in the spreadsheet.</div>
+    <div id="anneeListe" style="text-align: center; color: black; font-size: 18px;"></div>
+    <div id="no-seasons-message" style="text-align: center; color: #fff; font-size: 9px; display: none;">No seasons found in the spreadsheet.</div>
 </div>
 
 <div class='container' style="width: 100%; display: flex; justify-content: space-between; align-items: center;">
     <div class="chart1"></div>
     <div class="chart2"></div>
     <div class="chart3"></div>
-
 </div>
 
 <script>
-const excel_file = document.getElementById('excel_file');
-  const teamDropdown = document.getElementById("teamDropdown");
-  const divAnneeListe = document.getElementById("anneeListe");
-  let clickedValue = null;
+const teamDropdown = document.getElementById("teamDropdown");
+const divAnneeListe = document.getElementById("anneeListe");
+let clickedValue = null;
 let goals = [];
 let players = [];
 let matchs = [];
 
-excel_file.addEventListener('change', (event) => {
-    if (!['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/vnd.ms-excel'].includes(event.target.files[0].type)) {
-        console.log('Only .xlsx or .xls file format are allowed');
-        excel_file.value = '';
-        return false;
-    }
+// Replace 'excelFilePath' with the actual path to your Excel file
+const excelFilePath = './UEFA_cleaned.xlsx';
 
-    var reader = new FileReader();
-
-    reader.readAsArrayBuffer(event.target.files[0]);
-
-    reader.onload = function (event) {
-        var data = new Uint8Array(reader.result);
-        var work_book = XLSX.read(data, { type: 'array' });
+// Automatically fetch the Excel file
+fetch(excelFilePath)
+    .then(response => response.arrayBuffer())
+    .then(data => {
+        const work_book = XLSX.read(new Uint8Array(data), { type: 'array' });
         matchs = XLSX.utils.sheet_to_json(work_book.Sheets[work_book.SheetNames[4]], { header: 1 });
         goals = XLSX.utils.sheet_to_json(work_book.Sheets[work_book.SheetNames[5]], { header: 1 });
         players = XLSX.utils.sheet_to_json(work_book.Sheets[work_book.SheetNames[2]], { header: 1 });
@@ -112,117 +95,82 @@ excel_file.addEventListener('change', (event) => {
             noSeasonsMessage.style.display = "block";
             divAnneeListe.innerHTML = "";
         }
+    })
+    .catch(error => {
+        console.error('Error fetching Excel file:', error.message);
+    });
 
-        excel_file.value = '';
-    };
-});
-  teamDropdown.addEventListener('change', function () {
+teamDropdown.addEventListener('change', function () {
     const selectedTeam = this.value;
-    // Get the selected season from the clickedValue
-    // Call your match function with the selected season and team
     match(clickedValue, selectedTeam);
 });
 
+function creerListeAnnees(goals, players, matchs, seasons) {
+    divAnneeListe.innerHTML = "";
+    seasons.forEach(season => {
+        const elementListe = document.createElement("div");
+        elementListe.classList.add("item");
 
-  function creerListeAnnees(goals,players,matchs,seasons) {
-      seasons.forEach(season => {
-          const elementListe = document.createElement("div");
-          elementListe.classList.add("item");
+        const primaryText = document.createElement("span");
+        primaryText.setAttribute("slot", "primary");
+        primaryText.textContent = season;
 
-          const primaryText = document.createElement("span");
-          primaryText.setAttribute("slot", "primary");
-          primaryText.textContent = season;
+        elementListe.appendChild(primaryText);
 
-          elementListe.appendChild(primaryText);
+        const button = document.createElement("button");
+        button.classList.add("button");
+        button.textContent = "Click me";
+        button.addEventListener("click", function (e) {
+            e.stopPropagation();
+            clickedValue = season;
+            useClickedValue();
+        });
 
-          const button = document.createElement("button");
-          button.classList.add("button");
-          button.textContent = "Click me";
-          button.addEventListener("click", function (e) {
-              e.stopPropagation();
-              // Set the value of the clicked element to the global variable
-              clickedValue = season;
+        elementListe.appendChild(button);
 
-              // Remove active class from all items
-              const allItems = document.querySelectorAll('.item');
-              allItems.forEach(item => {
-                  item.classList.remove('active');
-              });
+        elementListe.addEventListener("click", function () {
+            clickedValue = season;
+            useClickedValue();
+        });
 
-              // Add active class to the clicked item
-              elementListe.classList.add('active');
+        divAnneeListe.appendChild(elementListe);
+    });
+}
 
-              // Now you can access clickedValue outside the function
-              useClickedValue();
-          });
+function useClickedValue() {
+    console.log("Clicked value outside function: " + clickedValue);
+    var selectedTeam = teamDropdown.value;
+    match(clickedValue, selectedTeam);
+}
 
-          elementListe.appendChild(button);
-
-          elementListe.addEventListener("click", function () {
-              // Set the value of the clicked element to the global variable
-              clickedValue = season;
-
-              // Remove active class from all items
-              const allItems = document.querySelectorAll('.item');
-              allItems.forEach(item => {
-                  item.classList.remove('active');
-              });
-
-              // Add active class to the clicked item
-              elementListe.classList.add('active');
-
-              // Now you can access clickedValue outside the function
-              useClickedValue();
-          });
-
-          divAnneeListe.appendChild(elementListe);
-      });
-  }
-
-  function useClickedValue() {
-      console.log("Clicked value outside function: " + clickedValue);
-      // Get the selected team from the dropdown
-      var selectedTeam = teamDropdown.value;
-      // Call your match function with the selected season and team
-      match(clickedValue, selectedTeam);
-  }
-
-  function match(season, team) {
-      // Your match function logic here
-      console.log("Match called with Season:", season, "and Team:", team);
-      // Get the element by its id
-
-
-// Get the team element by its id
+function match(season, team) {
+    console.log("Match called with Season:", season, "and Team:", team);
     var teamElement = document.getElementById('team');
     let team_nameWithoutSpaces = team.replace(/\s/g, "");
 
-    team_to_select=team_nameWithoutSpaces.toString()+'.jpg'
-    // Apply styles directly using JavaScript
+    team_to_select = team_nameWithoutSpaces.toString() + '.jpg';
     teamElement.style.position = 'absolute';
     teamElement.style.top = '5%';
     teamElement.style.left = '3.5%';
     teamElement.style.height = '80%';
     teamElement.style.width = '25%';
-    teamElement.style.backgroundImage = 'url(css/'+team_to_select+')';
+    teamElement.style.backgroundImage = 'url(css/' + team_to_select + ')';
     teamElement.style.backgroundSize = '50% 200px';
     teamElement.style.backgroundRepeat = 'no-repeat';
     teamElement.style.backgroundPosition = '10px 0px';
 
-    data=get_all_team_matchs_data(goals,players,matchs,team,season)
+    var data = get_all_team_matchs_data(goals, players, matchs, team, season);
 
-    if(data!='False'){
-    draw_pitch(data,".chart1") 
-    console.log(data)
+    if (data !== 'False') {
+        draw_pitch(data, ".chart1");
+        console.log(data);
 
-    piechart(matchs, season, team,".chart2")
-    Plot_barchart(data,".chart3")
-
-    }else{
-
-        var chart1 = d3.select(".chart1")
-        var chart2 = d3.select(".chart2")
-        var chart3 = d3.select(".chart3")
+        piechart(matchs, season, team, ".chart2");
+        Plot_barchart(data, ".chart3");
+    } else {
+        var chart1 = d3.select(".chart1");
+        var chart2 = d3.select(".chart2");
+        var chart3 = d3.select(".chart3");
 
         var svg1 = chart1.select("svg");
         svg1.selectAll("*").remove();
@@ -232,11 +180,8 @@ excel_file.addEventListener('change', (event) => {
 
         var svg3 = chart3.select("svg");
         svg3.selectAll("*").remove();
-
-
     }
-}    </script>
-
+}
+</script>
 </body>
-
 </html>
