@@ -432,7 +432,7 @@ const pieChartData = [
 // Dimensions et paramètres du pie chart
 const width = 300;
 const height = 300;
-const radius = Math.min(width, height) / 2;
+const radius = Math.min(width, height) / 4;
 const color = d3.scaleOrdinal(d3.schemeCategory10);
 const margin = ({top: 150, right: 50, bottom: 0, left: 150})
 
@@ -554,6 +554,15 @@ var tooltip = svg.append('svg:title')
 // Ajouter d'autres styles selon vos besoins
 tooltip.style('color', 'blue')
        .style('font-size', '12px');
+
+svg.append("text")
+   .attr("x",295)
+   .attr("y", 80)
+   .attr("text-anchor", "middle")
+   .style("font-size", "18px")
+   .style("font-weight", "bold")
+   .text("Match Results Distribution for the team")
+   .style("fill", "red");
 
 return svg.node();
 }
@@ -726,6 +735,15 @@ var height = 400;
           .style('background-color', 'white')
           .style('padding', '5px')
           .style('border', '1px solid black');
+    
+    svg.append("text")
+          .attr("x", width / 2)
+          .attr("y", 80)
+          .attr("text-anchor", "middle")
+          .style("font-size", "18px")
+          .style("font-weight", "bold")
+          .text("All goals types scored by the team")
+          .style("fill", "red");
     
     return svg.node();
     
