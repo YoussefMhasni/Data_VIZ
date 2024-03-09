@@ -562,7 +562,7 @@ svg.append("text")
    .style("font-size", "18px")
    .style("font-weight", "bold")
    .text("Match Results")
-   .style("fill", "red");
+   .style("fill", "white");
 
 // Données pour la légende
 const legendData = ["Wins", "Loses", "Draws"];
@@ -767,7 +767,7 @@ var height = 400;
           .style("font-size", "18px")
           .style("font-weight", "bold")
           .text("All goals types scored by the team")
-          .style("fill", "red");
+          .style("fill", "white");
     
     return svg.node();
     
