@@ -563,7 +563,33 @@ svg.append("text")
    .style("font-weight", "bold")
    .text("Match Results")
    .style("fill", "red");
+const newColorScale = d3.scaleOrdinal()
+    .range(["#264b96", "#1ab862", "#bf212f"]);
 
+// Données pour la légende
+const legendData = ["Wins", "Loses", "Draws"];
+
+// Créer un groupe pour la légende
+const legend = svg.append("g")
+    .attr("transform", `translate(${width / 20}, ${height / 5})`); // Remplacer x et y par la position où vous voulez placer la légende
+
+// Ajouter des éléments de légende pour chaque élément de données
+legend.selectAll("circle")
+    .data(legendData)
+    .enter().append("circle")
+    .attr("cx", 60) // Coordonnée x du cercle dans le groupe de légende
+    .attr("cy", (d, i) => i * 25) // Espacer les cercles verticalement
+    .attr("r", 5) // Rayon des cercles
+    .style("fill", d => newColorScale(d));
+
+// Ajouter du texte à côté de chaque cercle
+legend.selectAll("text")
+    .data(legendData)
+    .enter().append("text")
+    .attr("x",70) // Décalage par rapport au cercle pour éviter la superposition
+    .attr("y", (d, i) => i * 25 + 5) // Aligner le texte avec le centre des cercles
+    .text(d => d);
+return svg.node();
 return svg.node();
 }
 
