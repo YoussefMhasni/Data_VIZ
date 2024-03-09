@@ -432,7 +432,7 @@ const pieChartData = [
 // Dimensions et paramètres du pie chart
 const width = 300;
 const height = 300;
-const radius = Math.min(width, height) / 4;
+const radius = Math.min(width, height) / 3;
 const color = d3.scaleOrdinal(d3.schemeCategory10);
 const margin = ({top: 150, right: 50, bottom: 0, left: 150})
 
@@ -556,12 +556,12 @@ tooltip.style('color', 'blue')
        .style('font-size', '12px');
 
 svg.append("text")
-   .attr("x",295)
-   .attr("y", 80)
+   .attr("x",200)
+   .attr("y", 60)
    .attr("text-anchor", "middle")
    .style("font-size", "18px")
    .style("font-weight", "bold")
-   .text("Match Results Distribution for the team")
+   .text("Match Results")
    .style("fill", "red");
 
 return svg.node();
