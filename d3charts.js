@@ -557,7 +557,7 @@ tooltip.style('color', 'blue')
 
 svg.append("text")
    .attr("x",200)
-   .attr("y", 60)
+   .attr("y", 40)
    .attr("text-anchor", "middle")
    .style("font-size", "18px")
    .style("font-weight", "bold")
@@ -569,7 +569,7 @@ const legendData = ["Wins", "Loses", "Draws"];
 
 // Créer un groupe pour la légende
 const legend = svg.append("g")
-    .attr("transform", `translate(${width / 20}, ${height / 5})`); // Remplacer x et y par la position où vous voulez placer la légende
+    .attr("transform", `translate(-55, 60)`); // Remplacer x et y par la position où vous voulez placer la légende
 
 // Ajouter des éléments de légende pour chaque élément de données
 legend.selectAll("circle")
@@ -586,6 +586,7 @@ legend.selectAll("text")
     .enter().append("text")
     .attr("x",70) // Décalage par rapport au cercle pour éviter la superposition
     .attr("y", (d, i) => i * 25 + 5) // Aligner le texte avec le centre des cercles
+    .attr("fill","white")
     .text(d => d);
 return svg.node();
 }
