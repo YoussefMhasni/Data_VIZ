@@ -590,7 +590,6 @@ legend.selectAll("text")
     .attr("y", (d, i) => i * 25 + 5) // Aligner le texte avec le centre des cercles
     .text(d => d);
 return svg.node();
-return svg.node();
 }
 
 
