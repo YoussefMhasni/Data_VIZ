@@ -563,8 +563,6 @@ svg.append("text")
    .style("font-weight", "bold")
    .text("Match Results")
    .style("fill", "red");
-const newColorScale = d3.scaleOrdinal()
-    .range(["#264b96", "#1ab862", "#bf212f"]);
 
 // Données pour la légende
 const legendData = ["Wins", "Loses", "Draws"];
